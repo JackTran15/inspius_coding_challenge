@@ -143,13 +143,11 @@ export class TournamentController {
         order: {
           startMatch: 'DESC',
         },
-        take: paging.limit,
-        skip: paging.skip,
       });
 
       return {
         schedule,
-        listMatch: listMatch?.data || [],
+        listMatch: listMatch?.data.docs || [],
       };
     });
 
@@ -270,158 +268,6 @@ export class TournamentController {
         data: null,
         error: true,
       };
-    }
-  }
-
-  @Get('seeding')
-  async seedingAsync() {
-    // Create 32 team
-    const listTeam = [
-      'MU',
-      'MC',
-      'PSG',
-      'LFC',
-      'RM',
-      'BAR',
-      'ATM',
-      'JUV',
-      'MIL',
-      'INT',
-      'LAZ',
-      'ROM',
-      'NAP',
-      'SAS',
-      'LAC',
-      'LUD',
-      'BAY',
-      'DOR',
-      'BVB',
-      'SCH',
-      'BRE',
-      'WOL',
-      'FIO',
-      'SAMP',
-      'GEN',
-      'UDI',
-      'CAG',
-      'SPE',
-      'TOR',
-      'CRO',
-      'SAS',
-      'BOL',
-    ];
-
-    const listTeams = [];
-
-    for (const team of listTeam) {
-      const signalImage = await this._imageService.store({
-        name: team,
-        src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-        alt: team,
-      });
-      if (signalImage.error) throw new Error("Can't create image");
-      const image = signalImage.data;
-
-      const signalFootBallTeam = await this._footBallTeamService.store({
-        name: team,
-        logoId: image.id,
-      });
-      listTeams.push(signalFootBallTeam.data);
-    }
-
-    // Create tournament
-    const signalTournament = await this._tournamentService.store({
-      name: 'Champions League',
-      start: '2023-03-13T10:22:02.643Z',
-      end: '2023-06-13T10:22:55.674Z',
-      teams: listTeams,
-    });
-
-    const tournament = signalTournament.data;
-
-    // schedule Match
-    const payloadScheduleMatchs = [
-      '2023-03-14T03:11:30.748Z',
-      '2023-03-14T03:11:30.748Z',
-      '2023-03-14T03:11:30.748Z',
-      '2023-03-14T03:11:30.748Z',
-      '2023-04-14T03:11:30.748Z',
-      '2023-04-14T03:11:30.748Z',
-      '2023-04-14T03:11:30.748Z',
-      '2023-04-14T03:11:30.748Z',
-      '2023-04-19T03:11:30.748Z',
-      '2023-04-19T03:11:30.748Z',
-      '2023-04-19T03:11:30.748Z',
-      '2023-04-19T03:11:30.748Z',
-      '2023-04-19T03:11:30.748Z',
-      '2023-04-28T03:11:30.748Z',
-      '2023-04-28T03:11:30.748Z',
-      '2023-04-28T03:11:30.748Z',
-      '2023-04-28T03:11:30.748Z',
-      '2023-04-28T03:11:30.748Z',
-      '2023-05-14T03:11:30.748Z',
-      '2023-05-14T03:11:30.748Z',
-      '2023-05-14T03:11:30.748Z',
-      '2023-05-14T03:11:30.748Z',
-      '2023-05-14T03:11:30.748Z',
-      '2023-05-19T03:11:30.748Z',
-      '2023-05-19T03:11:30.748Z',
-      '2023-05-19T03:11:30.748Z',
-      '2023-05-19T03:11:30.748Z',
-      '2023-05-19T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-28T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-20T03:11:30.748Z',
-      '2023-05-21T03:11:30.748Z',
-      '2023-05-21T03:11:30.748Z',
-      '2023-05-21T03:11:30.748Z',
-      '2023-05-21T03:11:30.748Z',
-      '2023-05-21T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-      '2023-05-01T03:11:30.748Z',
-    ];
-
-    for (const payloadScheduleMatch of payloadScheduleMatchs) {
-      const signalScheduleMatch =
-        await this._footBallMatchScheduleService.getMatchScheduleOrCreated(
-          payloadScheduleMatch,
-        );
-
-      const homeTeam = listTeams[Math.floor(Math.random() * listTeams.length)];
-      const awayTeam = listTeams[Math.floor(Math.random() * listTeams.length)];
-
-      const signalGetMatch = await this._footBallMatchService.findOne({
-        where: {
-          homeTeamId: homeTeam.id,
-          awayTeamId: awayTeam.id,
-          tournamentId: tournament.id,
-          scheduleId: signalScheduleMatch.id,
-        },
-      });
-
-      if (!signalGetMatch.error && signalGetMatch.data === null) {
-        await this._footBallMatchService.store({
-          homeTeamId: homeTeam.id,
-          awayTeamId: awayTeam.id,
-          startMatch: payloadScheduleMatch,
-          tournamentId: tournament.id,
-          scheduleId: signalScheduleMatch.id,
-        });
-      }
     }
   }
 }

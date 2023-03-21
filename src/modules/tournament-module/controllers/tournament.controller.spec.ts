@@ -317,7 +317,7 @@ describe('FootBallTeamController', () => {
     });
   });
 
-  describe('Tournament (GET) Get List Tournament Math', () => {
+  describe('Tournament (GET) Get List Tournament Match', () => {
     it('should return list data Football Math of tournament', async () => {
       const query = {
         day: 23,

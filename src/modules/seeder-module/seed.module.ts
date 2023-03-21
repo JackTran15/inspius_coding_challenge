@@ -1,16 +1,14 @@
-import { Module } from '@nestjs/common';
-import { FootBallTeamModule } from './modules/football-team-module/football-team.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { TournamentTeamModule } from './modules/tournament-module/tournament.module';
-import { configService } from './shared/services/config.service';
-import { ImageModule } from './modules';
 import {
   FootballMatch,
   FootballMatchSchedule,
   FootballTeam,
   ImageEntity,
   Tournament,
-} from './entities';
+} from '@/entities';
+import { configService } from '@/shared/services/config.service';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SeedService } from './seed.service';
 
 @Module({
   imports: [
@@ -32,10 +30,15 @@ import {
         synchronize: true,
       }),
     }),
-    FootBallTeamModule,
-    TournamentTeamModule,
+    TypeOrmModule.forFeature([
+      Tournament,
+      ImageEntity,
+      FootballMatch,
+      FootballMatchSchedule,
+      FootballTeam,
+    ]),
   ],
-  controllers: [],
-  providers: [],
+  providers: [SeedService],
+  exports: [SeedService],
 })
-export class AppModule {}
+export class SeedModule {}

@@ -10,13 +10,42 @@ Product Version: v0.0.1
 
 ---
 
-ZUJ Lab Backend Overview
-
+### ZUJ Lab Backend's requirements
+<br />
 You have been tasked to build APIs to support our frontend (web & mobile) teams for the sections circled (in red) in the image above. These sections are known as the Fixtures module, and we will need APIs to support Fixtures Listing and Fixtures Calendar to display only dates with matches.
 
 <!-- ZUJ Lab Backend Objectives -->
 
+---
+
+### For Docker debugging
+
+<br />
+
+- To start the application and all the needed services
+
+
+```
+docker compose up -d  # or yarn start:docker
+```
+
+Then browser http://localhost:3000/docs to view APIs Document
+
+<br />
+
+- To seeding datas
+
+```
+docker compose -f docker-compose.seed.yml up -d # or yarn seed:docker
+```
+
+<br />
+
+---
+
 ## Database Design
+
+<br />
 
 <img src="./attachments/327681/491523.png" style="background: white"/>
 
@@ -77,9 +106,9 @@ Swagger: [http://127.0.0.1](http://127.0.0.1):3000/docs
 Update file .env with format example
 
 ```
-MYSQL_HOST=0.0.0.0
+MYSQL_HOST=127.0.0.1
 MYSQL_PORT=3306
-MYSQL_USER=anhtran
+MYSQL_USER=master_user
 MYSQL_PASSWORD=password
 MYSQL_DB=lab
 ```
@@ -88,6 +117,23 @@ Install Lib :
 
 ```
 yarn
+```
+
+Migrations
+
+- gernerate migration files to ./migrations directory 
+```
+yarn migration:generate --name=<meaningful_name>
+```
+
+- apply exists ./migrations files: 
+```
+yarn migration:run
+```
+
+- <i>(Optional)</i> seeding datas: 
+```
+yarn seed
 ```
 
 Run dev :

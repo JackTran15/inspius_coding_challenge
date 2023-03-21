@@ -19,10 +19,17 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./jest-e2e.ts",
-    "migrate:create": "ts-node ./node_modules/typeorm/cli.js migration:create -n",
-    "migrate:up": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "migrate:down": "ts-node ./node_modules/typeorm/cli.js migration:revert",
-    "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli ",
+    
+    "seed": "ts-node -r tsconfig-paths/register ./src/seeds.ts ",
+    "migration:run": "npm run typeorm migration:run -- -d ./ormconfig.ts",
+    "migration:generate": "cross-var npm run typeorm -- -d ./ormconfig.ts migration:generate ./migrations/$npm_config_name",
+    "migration:create": "cross-var npm run typeorm -- migration:create ./migrations/$npm_config_name",
+    "migration:revert": "npm run typeorm -- -d ./ormconfig.ts migration:revert",
+    
+    "start:docker": "docker compose up -d",
+    "start:docker-old": "docker-compose up -d",
+    "seed:docker": "docker compose -f ./docker-compose.seed.yml up -d"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -32,6 +39,7 @@
     "@nestjs/typeorm": "^9.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "cross-var": "^1.1.0",
     "dayjs": "^1.11.7",
     "mysql2": "^3.2.0",
     "reflect-metadata": "^0.1.13",

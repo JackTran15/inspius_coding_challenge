@@ -18,6 +18,6 @@ import { ImageModule } from '../image-module';
   ],
   controllers: [TournamentController],
   providers: [TournamentService],
-  exports: [TypeOrmModule, TournamentService],
+  exports: [TournamentService],
 })
 export class TournamentTeamModule {}

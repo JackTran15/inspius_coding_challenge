@@ -1,11 +1,11 @@
 From node:18-alpine
-WORKDIR /app
-COPY package.json .
 
-RUN yarn install
+WORKDIR /app
 
 COPY . .
 
-EXPOSE 3000
+RUN yarn install
 
-CMD ["yarn", "start"]
+RUN yarn build
+
+EXPOSE 3000

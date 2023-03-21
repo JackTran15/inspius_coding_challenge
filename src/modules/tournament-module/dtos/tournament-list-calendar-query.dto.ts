@@ -8,7 +8,7 @@ export class TournamentListCalendarQueryDto extends PagingQueryDto {
     type: Number,
     minimum: 0,
     maximum: 31,
-    required: true,
+    required: false,
     example: 0,
   })
   @IsNumberString()
@@ -21,6 +21,7 @@ export class TournamentListCalendarQueryDto extends PagingQueryDto {
     minimum: 1,
     maximum: 12,
     example: 1,
+    required: false,
   })
   @IsNumberString()
   @IsOptional()
@@ -32,6 +33,7 @@ export class TournamentListCalendarQueryDto extends PagingQueryDto {
     minimum: 1975,
     maximum: 2100,
     example: 2023,
+    required: false,
   })
   @IsNumberString()
   @IsOptional()

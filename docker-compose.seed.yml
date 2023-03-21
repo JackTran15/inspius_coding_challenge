@@ -1,0 +1,23 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  seed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: zuj-seed
+    restart: on-failure
+    environment:
+      MYSQL_HOST: zuj-backend-lab-db-1
+      MYSQL_PORT: 3306
+      MYSQL_USER: master_user
+      MYSQL_PASSWORD: password
+      MYSQL_DB: lab
+    command: yarn seed
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge

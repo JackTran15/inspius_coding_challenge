@@ -2,44 +2,44 @@
 version: '3.1'
 
 services:
-  migration:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: zuj-migration
-    restart: on-failure
-    depends_on:
-      - db
-    environment:
-      MYSQL_HOST: zuj-backend-lab-db-1
-      MYSQL_PORT: 3306
-      MYSQL_USER: master_user
-      MYSQL_PASSWORD: password
-      MYSQL_DB: lab
-    command: yarn migration:run
-    networks:
-      - default
+  # migration:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: zuj-migration
+  #   restart: on-failure
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     MYSQL_HOST: zuj-backend-lab-db-1
+  #     MYSQL_PORT: 3306
+  #     MYSQL_USER: master_user
+  #     MYSQL_PASSWORD: password
+  #     MYSQL_DB: lab
+  #   command: yarn migration:run
+  #   networks:
+  #     - default
 
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: zuj-app
-    restart: always
-    depends_on:
-      - db
-      - migration
-    environment:
-      MYSQL_HOST: zuj-backend-lab-db-1
-      MYSQL_PORT: 3306
-      MYSQL_USER: master_user
-      MYSQL_PASSWORD: password
-      MYSQL_DB: lab
-    command: yarn start
-    networks:
-      - default
-    ports:
-      - 3000:3000
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: zuj-app
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #     - migration
+  #   environment:
+  #     MYSQL_HOST: zuj-backend-lab-db-1
+  #     MYSQL_PORT: 3306
+  #     MYSQL_USER: master_user
+  #     MYSQL_PASSWORD: password
+  #     MYSQL_DB: lab
+  #   command: yarn start
+  #   networks:
+  #     - default
+  #   ports:
+  #     - 3000:3000
 
   db:
     image: mysql

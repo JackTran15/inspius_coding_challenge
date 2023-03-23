@@ -1,4 +1,3 @@
-import { ImageService } from '@/modules/image-module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FootBallTeamCreateDto } from '../dtos/football-team-create.dto';
 import { FootballTeamService } from '../services/football-team.service';
@@ -8,7 +7,6 @@ import { EntityManager } from 'typeorm';
 describe('FootBallTeamController', () => {
   let controller: FootBallTeamController;
   let footBallTeamService: FootballTeamService;
-  let imageService: ImageService;
   const paging = {
     limit: 10,
     skip: 0,
@@ -38,56 +36,20 @@ describe('FootBallTeamController', () => {
     }),
   });
 
-  const mockImageService = () => ({
-    find: jest.fn(() => {
-      return {
-        message: 'success',
-        data: [],
-        error: false,
-      };
-    }),
-    store: jest.fn((payload) => {
-      return {
-        message: 'success',
-        data: {
-          id: expect.any(Number),
-          ...payload,
-          created: expect.any(Date),
-          updated: expect.any(Date),
-          createBy: 'admin',
-          updateBy: 'admin',
-        },
-        error: false,
-      };
-    }),
-  });
-
   beforeEach(async () => {
     const FootballTeamProvider = {
       provide: FootballTeamService,
       useFactory: mockFootballTeamService,
     };
 
-    const ImageProvider = {
-      provide: ImageService,
-      useFactory: mockImageService,
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       controllers: [FootBallTeamController],
-      providers: [
-        FootballTeamService,
-        ImageService,
-        FootballTeamProvider,
-        ImageProvider,
-        EntityManager,
-      ],
+      providers: [FootballTeamService, FootballTeamProvider],
     }).compile();
 
     controller = module.get<FootBallTeamController>(FootBallTeamController);
     footBallTeamService = module.get<FootballTeamService>(FootballTeamService);
-    imageService = module.get<ImageService>(ImageService);
   });
 
   it('should controller be defined', () => {
@@ -165,15 +127,10 @@ describe('FootBallTeamController', () => {
       },
     });
 
-    const signalImage = await imageService.store(payload.logo);
-    expect(signalImage.error).toEqual(false);
-    expect(signalImage.data).not.toEqual(null);
-
-    const image = signalImage.data;
-
     const signalFootBallTeam = await footBallTeamService.store({
       name: payload.name,
-      logoId: image.id,
+      logoName: payload.logo.name,
+      logoSrc: payload.logo.src,
     });
 
     expect(signalFootBallTeam.error).toEqual(false);
@@ -189,17 +146,6 @@ describe('FootBallTeamController', () => {
         alt: 'Logo Man City 2',
       },
     });
-
-    // override mock function
-    imageService.store = jest.fn().mockResolvedValue({
-      message: "Can't create image",
-      data: null,
-      error: true,
-    });
-
-    const signalImage = await imageService.store(payload.logo);
-    expect(signalImage.error).toEqual(true);
-    expect(signalImage.data).toEqual(null);
   });
 
   it('should create football team return footTeam error', async () => {
@@ -219,15 +165,10 @@ describe('FootBallTeamController', () => {
       error: false,
     });
 
-    const signalImage = await imageService.store(payload.logo);
-    expect(signalImage.error).toEqual(false);
-    expect(signalImage.data).not.toEqual(null);
-
-    const image = signalImage.data;
-
     const signalFootBallTeam = await footBallTeamService.store({
       name: payload.name,
-      logoId: image.id,
+      logoName: payload.logo.name,
+      logoSrc: payload.logo.src,
     });
 
     expect(signalFootBallTeam.error).toEqual(false);

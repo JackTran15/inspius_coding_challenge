@@ -24,6 +24,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
         take: paging.limit,
         skip: paging.skip,
       };
+      console.log("expectedResponse",options)
       const signalFindAll = await this.repository.find(options);
       const signalCount = await this.repository.count(options);
 
@@ -55,10 +56,22 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
     }
   }
 
-  async find(options: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
+  async find({
+    where,
+    select,
+    skip,
+    take,
+    relations,
+  }: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
     try {
-      const signalFindAll = await this.repository.find(options);
-      const signalCount = await this.repository.count(options);
+      const signalFindAll = await this.repository.find({
+        where,
+        select,
+        skip,
+        take,
+        relations,
+      });
+      const signalCount = await this.repository.count({ where });
 
       return {
         message: 'Get List Success',
@@ -66,11 +79,8 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
           docs: signalFindAll,
           paging: {
             total: signalCount,
-            limit: options.take,
-            skip:
-              options.skip + options.take > signalCount
-                ? signalCount
-                : options.skip + options.take,
+            limit: take,
+            skip: skip + take > signalCount ? signalCount : skip + take,
           },
         },
         error: false,
@@ -82,8 +92,8 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
           docs: [],
           paging: {
             total: 0,
-            limit: options.take,
-            skip: options.skip,
+            limit: take,
+            skip: skip,
           },
         },
         error: false,

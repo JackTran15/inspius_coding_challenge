@@ -3,14 +3,7 @@ import { FootBallTeamModule } from './modules/football-team-module/football-team
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TournamentTeamModule } from './modules/tournament-module/tournament.module';
 import { configService } from './shared/services/config.service';
-import { ImageModule } from './modules';
-import {
-  FootballMatch,
-  FootballMatchSchedule,
-  FootballTeam,
-  ImageEntity,
-  Tournament,
-} from './entities';
+import { FootballMatch, FootballTeam, Tournament } from './entities';
 
 @Module({
   imports: [
@@ -22,13 +15,7 @@ import {
         username: configService.getValue('MYSQL_USER'),
         password: configService.getValue('MYSQL_PASSWORD'),
         database: configService.getValue('MYSQL_DB'),
-        entities: [
-          FootballMatch,
-          FootballMatchSchedule,
-          FootballTeam,
-          ImageEntity,
-          Tournament,
-        ],
+        entities: [FootballMatch, FootballTeam, Tournament],
         synchronize: true,
       }),
     }),

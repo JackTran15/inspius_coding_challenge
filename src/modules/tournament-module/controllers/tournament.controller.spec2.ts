@@ -1,7 +1,5 @@
 import { FootBallMatchService } from '@/modules/football-match-module';
-import { FootBallMatchScheduleService } from '@/modules/football-match-schedule-module';
 import { FootballTeamService } from '@/modules/football-team-module';
-import { ImageService } from '@/modules/image-module';
 import { Test, TestingModule } from '@nestjs/testing';
 import { In } from 'typeorm';
 import { TournamentService } from '../services';
@@ -9,11 +7,9 @@ import { TournamentController } from './tournament.controller';
 
 describe('FootBallTeamController', () => {
   let controller: TournamentController;
-  let imageService: ImageService;
   let tournamentService: TournamentService;
   let footBalLTeamService: FootballTeamService;
   let footBallMatchService: FootBallMatchService;
-  let footBallMatchScheduleService: FootBallMatchScheduleService;
   const paging = {
     limit: 10,
     skip: 0,
@@ -30,11 +26,6 @@ describe('FootBallTeamController', () => {
   });
 
   beforeEach(async () => {
-    const ImageProvider = {
-      provide: ImageService,
-      useFactory: mockFuncDefault,
-    };
-
     const TournamentProvider = {
       provide: TournamentService,
       useFactory: mockFuncDefault,
@@ -50,44 +41,31 @@ describe('FootBallTeamController', () => {
       useFactory: mockFuncDefault,
     };
 
-    const FootBallMatchScheduleProvider = {
-      provide: FootBallMatchScheduleService,
-      useFactory: mockFuncDefault,
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       controllers: [TournamentController],
       providers: [
-        ImageProvider,
         TournamentService,
         TournamentProvider,
         FootballTeamProvider,
         FootBallMatchProvider,
-        FootBallMatchScheduleProvider,
       ],
     }).compile();
 
     controller = module.get<TournamentController>(TournamentController);
-    imageService = module.get<ImageService>(ImageService);
     tournamentService = module.get<TournamentService>(TournamentService);
     footBalLTeamService = module.get<FootballTeamService>(FootballTeamService);
     footBallMatchService =
       module.get<FootBallMatchService>(FootBallMatchService);
-    footBallMatchScheduleService = module.get<FootBallMatchScheduleService>(
-      FootBallMatchScheduleService,
-    );
   });
 
   it('should controller be defined', () => {
     expect(controller).toBeDefined();
   });
   it('should all service be defined', () => {
-    expect(imageService).toBeDefined();
     expect(tournamentService).toBeDefined();
     expect(footBalLTeamService).toBeDefined();
     expect(footBallMatchService).toBeDefined();
-    expect(footBallMatchScheduleService).toBeDefined();
   });
 
   describe('Tournament (GET) Get List Tournament', () => {
@@ -191,9 +169,6 @@ describe('FootBallTeamController', () => {
           },
         },
       };
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValueOnce(signalFootBallTeamSchedule);
 
       // Mock data footBallMatch
       const countMatchs = [2, 1];
@@ -223,9 +198,6 @@ describe('FootBallTeamController', () => {
 
       expect(resListMatchSchedule).toEqual(expectedListMatchSchedule);
 
-      expect(footBallMatchScheduleService.find).toBeCalledWith(
-        queryCriteriaFootBallMatchSchedule,
-      );
       expect(footBallMatchService.count).toBeCalledWith({
         where: {
           scheduleId: listSchedule[0].id,
@@ -277,9 +249,6 @@ describe('FootBallTeamController', () => {
           },
         },
       };
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValueOnce(signalFootBallTeamSchedule);
 
       // Mock data footBallMatch
       const countMatchs = [2, 1];
@@ -308,10 +277,6 @@ describe('FootBallTeamController', () => {
       });
 
       expect(resListMatchSchedule).toEqual(expectedListMatchSchedule);
-
-      expect(footBallMatchScheduleService.find).toBeCalledWith(
-        queryCriteriaFootBallMatchSchedule,
-      );
 
       expect(footBallMatchService.count).not.toBeCalled();
     });
@@ -370,9 +335,6 @@ describe('FootBallTeamController', () => {
           },
         },
       };
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValueOnce(signalFootBallTeamSchedule);
 
       // Mock data footBallMatch
       const queryCriteriaFootBallMatch = {
@@ -408,10 +370,6 @@ describe('FootBallTeamController', () => {
       });
 
       expect(resListMatchSchedule).toEqual(expectedListMatchSchedule);
-
-      expect(footBallMatchScheduleService.find).toBeCalledWith(
-        queryCriteriaFootBallMatchSchedule,
-      );
     });
   });
 
@@ -646,12 +604,6 @@ describe('FootBallTeamController', () => {
 
       const countFindMatchSuccess = 2;
 
-      footBallMatchScheduleService.getMatchScheduleOrCreated = jest
-        .fn()
-        .mockResolvedValueOnce(scheduleFind)
-        .mockResolvedValueOnce(scheduleFind)
-        .mockResolvedValueOnce(scheduleFind);
-
       const signalFindMatchSuccess = {
         error: false,
         data: expect.any(Object),
@@ -687,9 +639,6 @@ describe('FootBallTeamController', () => {
       );
 
       expect(signalMatchArrangement).toEqual(expectedMatchArrangement);
-      expect(
-        footBallMatchScheduleService.getMatchScheduleOrCreated,
-      ).toBeCalledTimes(matchs.length);
       expect(footBallMatchService.findOne).toBeCalledTimes(matchs.length);
       expect(footBallMatchService.store).toBeCalledTimes(countFindMatchSuccess);
     });

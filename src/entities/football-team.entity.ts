@@ -1,6 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToMany } from 'typeorm';
 import { _BaseEntity } from './base.entity';
-import { ImageEntity } from './image.entity';
 import { Tournament } from './tournament.entity';
 
 export enum EFootballTeamStatus {
@@ -13,11 +12,11 @@ export class FootballTeam extends _BaseEntity {
   @Column({ type: 'varchar' })
   name: string;
 
-  @Column({ name: 'logo_id', type: 'int' })
-  logoId: number;
-  @OneToOne(() => ImageEntity, { eager: true })
-  @JoinColumn({ name: 'logo_id' })
-  logo: ImageEntity;
+  @Column('text')
+  logoName: string;
+
+  @Column('text')
+  logoSrc: string;
 
   @Column({
     type: 'enum',

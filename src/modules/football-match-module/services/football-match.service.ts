@@ -21,6 +21,7 @@ export class FootBallMatchService extends BaseService<FootballMatch> {
     IResponseListRepository<FootballMatch>
   > {
     try {
+      // create query builder get distinct raw day month year
       const signalFindAll = await this.repository
         .createQueryBuilder('FBM')
         .where(where)

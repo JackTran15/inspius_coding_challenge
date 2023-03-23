@@ -6,7 +6,7 @@ import {
 import { TournamentGetListResDto } from '@/modules/football-team-module/types';
 import { Paging } from '@/shared/decorators';
 import { PagingQueryDto } from '@/shared/dto';
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { FindManyOptions, In } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
@@ -21,6 +21,7 @@ import {
 } from '../dtos';
 import { Tournament } from '@/entities';
 import { DateUtil } from '@/shared/utils';
+import { ApiKeyGuard } from '@/modules/api-key-module/guards/api-key.guard';
 
 @Controller('tournament')
 export class TournamentController {
@@ -31,6 +32,7 @@ export class TournamentController {
   ) {}
 
   @Get()
+  @UseGuards(ApiKeyGuard)
   @ApiResponse({
     status: 200,
     description: 'Get List Tournament Success',
@@ -40,11 +42,13 @@ export class TournamentController {
     @Paging() paging: PagingQueryDto,
     @Query() query: TournamentListQueryDto,
   ): Promise<TournamentGetListResDto> {
+    // relation model footballteam when find tournament
     const queryCriteria: FindManyOptions<Tournament> = {
       relations: ['teams'],
       skip: paging.skip,
       take: paging.limit,
     };
+
     return await this._tournamentService.find(queryCriteria);
   }
 
@@ -55,6 +59,7 @@ export class TournamentController {
   ) {
     try {
       const { day, month, year } = query;
+
       const condition = {
         year,
       };
@@ -65,6 +70,10 @@ export class TournamentController {
         condition['day'] = day;
       }
 
+      /**
+       * Find schedule in query criteria with condition day, month, year 
+       * Distinct select raw with colurms(day, month, year).
+       */
       const schedules = await this._footBallMatchService.findDistinctCalendar({
         where: condition,
       });
@@ -102,6 +111,8 @@ export class TournamentController {
       condition['day'] = day;
     }
 
+    // get information match in condition day, month, year
+    // select and relation
     const signalListMatch = await this._footBallMatchService.find({
       where: condition,
       take: paging.limit,
@@ -145,8 +156,10 @@ export class TournamentController {
   }
 
   @Post('create')
+  @UseGuards(ApiKeyGuard)
   async createTournament(@Body() payload: TournamentCreateDto) {
     try {
+      // insert tournament
       const signalTournament = await this._tournamentService.store(payload);
       return signalTournament;
     } catch (e) {
@@ -159,18 +172,26 @@ export class TournamentController {
   }
 
   @Post('match-arrangement')
+  @UseGuards(ApiKeyGuard)
   async matchArrangementAsync(@Body() payload: TournamentMatchArrangementDto) {
     try {
       const { tournamentId, matchs } = payload;
-      const responseNewMatchs = [];
-      const responseExistMatchs = [];
+      const responseNewMatchs = []; // return create new match success
+      const responseExistMatchs = []; // return exist match, can you notify manager create match arrangement
+
       for (const match of matchs) {
+        // get dates, month year from matchStartTime
         const { dates, month, year }: any = DateUtil.get(match.matchStartTime, [
           'month',
           'year',
           'dates',
         ]);
 
+        /**
+         * Find footBall Match is exist
+         * if exist true add match to responseExistMatchs
+         * else create match after add to responseNewMatchs
+         */
         const signalGetMatch = await this._footBallMatchService.findOne({
           where: {
             homeTeamId: match.homeTeam,
@@ -216,23 +237,27 @@ export class TournamentController {
   }
 
   @Put('id/:id')
+  @UseGuards(ApiKeyGuard)
   async updateTournamentById(
     @Param() params: FootBallTeamRegisterTournamentParamDto,
     @Body() payload: FootBallTeamRegisterTournamentDto,
   ) {
     try {
+      // check tournament exist when update register football in tournament
       const signalTournament = await this._tournamentService.findOne({
         where: {
           id: parseInt(params.id.toString()),
         },
         relations: ['teams'],
       });
+
       if (signalTournament.error || signalTournament.data === null) {
         throw new Error(signalTournament.message);
       }
 
       const tournament = signalTournament.data;
 
+      // get list football team register tournament
       const signalListFootBallTeam = await this._footBallTeamService.findByIds(
         payload.footBallTeamIds as EntityId[],
       );
@@ -242,6 +267,7 @@ export class TournamentController {
 
       const listFootBallTeam = signalListFootBallTeam.data.docs;
 
+      // add new list foot ball team to list teams in entity tournament after update tournament with new list teams
       const signalUpdateTournament =
         await this._tournamentService.registerFootBallTeams(
           tournament,

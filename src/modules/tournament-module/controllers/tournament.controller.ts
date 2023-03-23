@@ -65,11 +65,8 @@ export class TournamentController {
         condition['day'] = day;
       }
 
-      const schedules = await this._footBallMatchService.find({
+      const schedules = await this._footBallMatchService.findDistinctCalendar({
         where: condition,
-        take: paging.limit,
-        skip: paging.skip,
-        select: ['day', 'month', 'year'],
       });
 
       return {

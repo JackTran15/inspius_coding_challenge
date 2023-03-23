@@ -5,15 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TournamentRepository } from '@/repositories/tournament.repository';
 import { FootballTeamService } from '@/modules/football-team-module';
 import { FootBallMatchService } from '@/modules/football-match-module';
+import { FindManyOptions } from 'typeorm';
+import { IResponseListRepository } from '@/shared/types';
 
 @Injectable()
 export class TournamentService extends BaseService<Tournament> {
   constructor(
     @InjectRepository(Tournament)
     _tournament: TournamentRepository,
-
-    // private readonly _footBallTeamService: FootballTeamService,
-    // private readonly _footBallMatchService: FootBallMatchService,
   ) {
     super(_tournament);
   }

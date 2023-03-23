@@ -24,7 +24,6 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
         take: paging.limit,
         skip: paging.skip,
       };
-      console.log("expectedResponse",options)
       const signalFindAll = await this.repository.find(options);
       const signalCount = await this.repository.count(options);
 

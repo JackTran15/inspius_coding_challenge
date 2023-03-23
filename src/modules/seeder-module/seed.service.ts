@@ -44,10 +44,11 @@ export class SeedService {
     const tournament = await this.tournamentRepo.save(payloadTournament);
 
     for (const payloadScheduleMatch of listScheduleMatchMock) {
-      const { year, month, date, hour, minute }: any = DateUtil.get(
-        payloadScheduleMatch,
-        ['year', 'month', 'date'],
-      );
+      const { year, month, date }: any = DateUtil.get(payloadScheduleMatch, [
+        'year',
+        'month',
+        'date',
+      ]);
 
       const homeTeam = listTeams[Math.floor(Math.random() * listTeams.length)];
       const awayTeam = listTeams[Math.floor(Math.random() * listTeams.length)];

@@ -1,9 +1,9 @@
-import { FootballTeam } from '@/entities';
+import { FootballMatch } from '@/entities';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
-import { FootballTeamService } from './football-team.service';
+import { FootBallMatchService } from './football-match.service';
 export type MockType<T> = {
   [P in keyof T]?: jest.Mock<{}>;
 };
@@ -14,23 +14,23 @@ export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
     // ...
   }),
 );
-describe('FootballTeam Service Spec', () => {
-  let service: FootballTeamService;
-  let repositoryMock: MockType<Repository<FootballTeam>>;
+describe('FootballMatch Service Spec', () => {
+  let service: FootBallMatchService;
+  let repositoryMock: MockType<Repository<FootballMatch>>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        FootballTeamService,
+        FootBallMatchService,
         // Provide your mock instead of the actual repository
         {
-          provide: getRepositoryToken(FootballTeam),
+          provide: getRepositoryToken(FootballMatch),
           useFactory: repositoryMockFactory,
         },
       ],
     }).compile();
-    service = module.get<FootballTeamService>(FootballTeamService);
-    repositoryMock = module.get(getRepositoryToken(FootballTeam));
+    service = module.get<FootBallMatchService>(FootBallMatchService);
+    repositoryMock = module.get(getRepositoryToken(FootballMatch));
   });
 
   it('should find a user', async () => {
@@ -38,20 +38,20 @@ describe('FootballTeam Service Spec', () => {
     expect(repositoryMock).toBeDefined();
   });
 
-  it('should find all FootballTeam', async () => {
+  it('should find all FootballMatch', async () => {
     const paging = {
       skip: 0,
       limit: 10,
     };
 
-    const docs = new Array(20).fill(0).map((_) => new FootballTeam());
+    const docs = new Array(20).fill(0).map((_) => new FootballMatch());
 
     repositoryMock.find = jest
       .fn()
       .mockResolvedValueOnce(docs.slice(paging.skip, paging.limit));
     repositoryMock.count = jest.fn().mockResolvedValueOnce(docs.length);
 
-    const signalFootballTeam = await service.find({
+    const signalFootballMatch = await service.find({
       skip: paging.skip,
       take: paging.limit,
     });
@@ -69,10 +69,10 @@ describe('FootballTeam Service Spec', () => {
       error: false,
     };
 
-    expect(signalFootballTeam).toStrictEqual(expected);
+    expect(signalFootballMatch).toStrictEqual(expected);
   });
 
-  describe('FootballTeam using function findByIds', () => {
+  describe('FootballMatch using function findByIds', () => {
     it('should return a list of entities with pagination information', async () => {
       // Arrange
       const paging = {
@@ -89,7 +89,7 @@ describe('FootballTeam Service Spec', () => {
         skip: paging.skip,
       };
 
-      const docs = new Array(20).fill(0).map((_) => new FootballTeam());
+      const docs = new Array(20).fill(0).map((_) => new FootballMatch());
 
       const expectedResponse = {
         message: 'get List Sucess',
@@ -138,7 +138,7 @@ describe('FootballTeam Service Spec', () => {
         skip: paging.skip,
       };
 
-      const docs = new Array(20).fill(0).map((_) => new FootballTeam());
+      const docs = new Array(20).fill(0).map((_) => new FootballMatch());
 
       const expectedResponse = {
         message: 'get List Sucess',
@@ -172,7 +172,7 @@ describe('FootballTeam Service Spec', () => {
     });
   });
 
-  describe('FootballTeam using function find', () => {
+  describe('FootballMatch using function find', () => {
     it('should return a list of entities with pagination information', async () => {
       // Arrange
       const paging = {
@@ -185,7 +185,7 @@ describe('FootballTeam Service Spec', () => {
         skip: paging.skip,
       };
 
-      const docs = new Array(20).fill(0).map((_) => new FootballTeam());
+      const docs = new Array(20).fill(0).map((_) => new FootballMatch());
 
       const expectedResponse = {
         message: 'Get List Success',
@@ -304,7 +304,7 @@ describe('FootballTeam Service Spec', () => {
     });
   });
 
-  describe('FootballTeam using function findOne', () => {
+  describe('FootballMatch using function findOne', () => {
     it('should return record of entities information', async () => {
       // Arrange
       const id = 1;
@@ -314,7 +314,7 @@ describe('FootballTeam Service Spec', () => {
         },
       };
 
-      const doc = new FootballTeam();
+      const doc = new FootballMatch();
 
       const expectedResponse = {
         message: 'Get Detail Success',
@@ -390,7 +390,7 @@ describe('FootballTeam Service Spec', () => {
     });
   });
 
-  describe('FootballTeam using function findById', () => {
+  describe('FootballMatch using function findById', () => {
     it('should return record of entities information', async () => {
       // Arrange
       const id = 1;
@@ -400,7 +400,7 @@ describe('FootballTeam Service Spec', () => {
         },
       };
 
-      const doc = new FootballTeam();
+      const doc = new FootballMatch();
 
       const expectedResponse = {
         message: 'Get Detail Success',
@@ -476,10 +476,10 @@ describe('FootballTeam Service Spec', () => {
     });
   });
 
-  describe('FootballTeam using function store', () => {
+  describe('FootballMatch using function store', () => {
     it('should return new record create from payload', async () => {
       // Arrange
-      const doc = new FootballTeam();
+      const doc = new FootballMatch();
 
       const expectedResponse = {
         message: 'create success',
@@ -499,7 +499,7 @@ describe('FootballTeam Service Spec', () => {
 
     it('should return new connect server problems', async () => {
       // Arrange
-      const doc = new FootballTeam();
+      const doc = new FootballMatch();
 
       const expectedResponse = {
         message: 'Internal server error',
@@ -517,6 +517,163 @@ describe('FootballTeam Service Spec', () => {
       // Assert
       expect(response).toEqual(expectedResponse);
       expect(repositoryMock.save).toHaveBeenCalledWith(doc);
+    });
+  });
+
+  describe('FootballMatch using function findDistinctCalendar', () => {
+    it('should return a list of entities with pagination information', async () => {
+      // Arrange
+      const paging = {
+        skip: 0,
+        limit: 10,
+      };
+      const options = {
+        where: {},
+        take: paging.limit,
+        skip: paging.skip,
+      };
+
+      const docs = new Array(20).fill(0).map((_, index) => {
+        return {
+          day: index + 1,
+          month: 3,
+          year: 2023,
+        };
+      });
+
+      const expectedResponse = {
+        message: 'Get list Distint Calendar Success',
+        data: {
+          docs,
+          paging: {
+            total: docs.length,
+            limit: null,
+            skip: null,
+          },
+        },
+        error: false,
+      };
+
+      const mokcQueryBullder: any = jest.fn(() => ({
+        where: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        distinct: jest.fn().mockReturnThis(),
+        getRawMany: jest.fn().mockReturnValueOnce(docs),
+      }));
+
+      // Mock the repository
+      repositoryMock.createQueryBuilder = jest
+        .fn()
+        .mockImplementationOnce(mokcQueryBullder);
+
+      // Act
+      const response = await service.findDistinctCalendar({
+        where: options.where,
+      });
+
+      // Assert
+      expect(response).toEqual(expectedResponse);
+      expect(repositoryMock.createQueryBuilder).toHaveBeenCalledWith('FBM');
+    });
+
+    it('should return an empty list if no entities are found', async () => {
+      // Arrange
+      const paging = {
+        skip: 0,
+        limit: 10,
+      };
+      const options = {
+        where: {},
+        take: paging.limit,
+        skip: paging.skip,
+      };
+
+      const docs = [];
+
+      const expectedResponse = {
+        message: 'Get list Distint Calendar Success',
+        data: {
+          docs,
+          paging: {
+            total: docs.length,
+            limit: null,
+            skip: null,
+          },
+        },
+        error: false,
+      };
+
+      const mokcQueryBullder: any = jest.fn(() => ({
+        where: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        distinct: jest.fn().mockReturnThis(),
+        getRawMany: jest.fn().mockReturnValueOnce(docs),
+      }));
+
+      // Mock the repository
+      repositoryMock.createQueryBuilder = jest
+        .fn()
+        .mockImplementationOnce(mokcQueryBullder);
+
+      // Act
+      const response = await service.findDistinctCalendar({
+        where: options.where,
+      });
+
+      // Assert
+      expect(response).toEqual(expectedResponse);
+      expect(repositoryMock.createQueryBuilder).toHaveBeenCalledWith('FBM');
+    });
+
+    it('should return an empty list if no connect to server problems', async () => {
+      // Arrange
+      const paging = {
+        skip: 0,
+        limit: 10,
+      };
+      const options = {
+        where: {},
+        take: paging.limit,
+        skip: paging.skip,
+      };
+
+      const docs = [];
+
+      const expectedResponse = {
+        message: 'Conect Server Problem',
+        data: {
+          docs,
+          paging: {
+            total: docs.length,
+            limit: null,
+            skip: null,
+          },
+        },
+        error: false,
+      };
+
+      const mokcQueryBullder: any = jest.fn(() => ({
+        where: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        distinct: jest.fn().mockReturnThis(),
+        getRawMany: jest
+          .fn()
+          .mockRejectedValueOnce(new Error('Conect Server Problem')),
+      }));
+
+      // Mock the repository
+      repositoryMock.createQueryBuilder = jest
+        .fn()
+        .mockImplementationOnce(mokcQueryBullder);
+
+      // Act
+      const response = await service.findDistinctCalendar({
+        where: options.where,
+      });
+
+      // Assert
+      expect(response).toEqual(expectedResponse);
+      expect(repositoryMock.createQueryBuilder).toHaveBeenCalledWith('FBM');
     });
   });
 });

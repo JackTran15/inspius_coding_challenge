@@ -30,7 +30,12 @@ export class FootBallMatchScheduleService extends BaseService<FootballMatchSched
         },
       });
 
-      if (matchScheduleGet) return { error: false, data: matchScheduleGet, message: 'schedule found' };
+      if (matchScheduleGet)
+        return {
+          error: false,
+          data: matchScheduleGet,
+          message: 'schedule found',
+        };
 
       const matchScheduleCreate = await this.repository.save({
         year,
@@ -39,10 +44,13 @@ export class FootBallMatchScheduleService extends BaseService<FootballMatchSched
         dateValue: new Date(startMatch),
       });
 
-      return { error: false, data: matchScheduleCreate, message: 'schedule created' };;
-
+      return {
+        error: false,
+        data: matchScheduleCreate,
+        message: 'schedule created',
+      };
     } catch (error) {
-      return { error: true, message: error.message, data: null }
+      return { error: true, message: error.message, data: null };
     }
   }
 }

@@ -39,7 +39,7 @@ describe('FootBall Team Controller (e2e)', () => {
       };
 
       const size = 20;
-      const docs = new Array(size).fill(0).map((_, i) => {
+      const docs = new Array(size).fill(0).map(() => {
         const team = new FootballTeam();
         return team;
       });

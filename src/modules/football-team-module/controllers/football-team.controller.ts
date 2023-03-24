@@ -32,7 +32,7 @@ export class FootBallTeamController {
   }
 
   @Post('create')
-  @UseGuards(ApiKeyGuard) 
+  @UseGuards(ApiKeyGuard)
   async createAsync(@Body() payload: FootBallTeamCreateDto) {
     const { name, logo } = payload;
     try {

@@ -1,10 +1,11 @@
 import { FootballMatchSchedule } from '@/entities';
 import { FootBallMatchService, FootballTeamService } from '@/modules';
+import { ApiKeyGuard } from '@/modules/api-key-module/guards/api-key.guard';
 import { FootBallMatchScheduleService } from '@/modules/football-match-schedule-module/services';
 import { Paging } from '@/shared/decorators';
 import { PagingQueryDto } from '@/shared/dto';
 import { DateUtil } from '@/shared/utils';
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { Between, FindManyOptions } from 'typeorm';
 import {
   ListCalendarQueryDto,
@@ -110,7 +111,7 @@ export class ApiGatewayController {
   }
 
   @Post('match-arrangement')
-  // @UseGuards(ApiKeyGuard)
+  @UseGuards(ApiKeyGuard)
   async matchArrangementAsync(@Body() payload: TournamentMatchArrangementDto) {
     try {
       const { match } = payload;

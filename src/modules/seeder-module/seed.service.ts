@@ -1,22 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FootballMatch, FootballTeam, Tournament } from '@/entities';
+import { FootballMatch, FootballMatchSchedule, FootballTeam } from '@/entities';
 import {
   FootBallMatchRepository,
+  FootballMatchScheduleRepository,
   FootBallTeamRepository,
-  TournamentRepository,
 } from '@/repositories';
 import { DateUtil } from '@/shared/utils';
 import { listFootBallTeam, listScheduleMatchMock } from './__mocks';
-import { tournamentMock } from './__mocks/tournament.mock';
 
 @Injectable()
 export class SeedService {
   constructor(
-    @InjectRepository(Tournament)
-    private readonly tournamentRepo: TournamentRepository,
+    @InjectRepository(FootballMatchSchedule)
+    private readonly footballMatchScheduletRepo: FootballMatchScheduleRepository,
+
     @InjectRepository(FootballTeam)
     private readonly teamRepo: FootBallTeamRepository,
+
     @InjectRepository(FootballMatch)
     private readonly matchRepo: FootBallMatchRepository,
   ) {}
@@ -29,19 +30,13 @@ export class SeedService {
       'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
 
     for (const team of listFootBallTeam) {
-      const footBallTeam = await this.teamRepo.save({
+      const _team = await this.teamRepo.save({
         name: team,
         logoName: team,
         logoSrc: defaultImage,
       });
-      listTeams.push(footBallTeam);
+      listTeams.push(_team);
     }
-
-    const payloadTournament = {
-      ...tournamentMock,
-      teams: listTeams,
-    };
-    const tournament = await this.tournamentRepo.save(payloadTournament);
 
     for (const payloadScheduleMatch of listScheduleMatchMock) {
       const { year, month, date }: any = DateUtil.get(payloadScheduleMatch, [
@@ -49,6 +44,22 @@ export class SeedService {
         'month',
         'date',
       ]);
+      let schedule = await this.footballMatchScheduletRepo.findOne({
+        where: {
+          day: date,
+          month: month,
+          year: year,
+        },
+      });
+
+      if (!schedule) {
+        schedule = await this.footballMatchScheduletRepo.save({
+          day: date,
+          month: month,
+          year: year,
+          dateValue: payloadScheduleMatch,
+        });
+      }
 
       const homeTeam = listTeams[Math.floor(Math.random() * listTeams.length)];
       const awayTeam = listTeams[Math.floor(Math.random() * listTeams.length)];
@@ -60,6 +71,7 @@ export class SeedService {
           day: date,
           month: month,
           year: year,
+          scheduleId: schedule.id,
         },
       });
 
@@ -71,6 +83,7 @@ export class SeedService {
           day: date,
           month: month,
           year: year,
+          scheduleId: schedule.id,
         });
       }
     }

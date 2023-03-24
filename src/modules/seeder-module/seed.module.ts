@@ -1,4 +1,4 @@
-import { FootballMatch, FootballTeam, Tournament } from '@/entities';
+import { FootballMatch, FootballMatchSchedule, FootballTeam } from '@/entities';
 import { configService } from '@/shared/services/config.service';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,11 +14,15 @@ import { SeedService } from './seed.service';
         username: configService.getValue('MYSQL_USER'),
         password: configService.getValue('MYSQL_PASSWORD'),
         database: configService.getValue('MYSQL_DB'),
-        entities: [FootballMatch, FootballTeam, Tournament],
+        entities: [FootballMatch, FootballTeam, FootballMatchSchedule],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([Tournament, FootballMatch, FootballTeam]),
+    TypeOrmModule.forFeature([
+      FootballMatchSchedule,
+      FootballMatch,
+      FootballTeam,
+    ]),
   ],
   providers: [SeedService],
   exports: [SeedService],

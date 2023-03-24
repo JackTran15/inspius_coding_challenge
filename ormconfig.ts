@@ -2,10 +2,9 @@ import { DataSource } from 'typeorm';
 import 'dotenv/config';
 import { configService } from './src/shared/services/config.service';
 import { FootballMatch, FootballTeam, FootballMatchSchedule } from '@/entities';
-import { init1679644207118 } from 'migrations/1679644207118-init';
-import { updateTypeDatetime1679645372400 } from 'migrations/1679645372400-update-type-datetime';
+import { init1679653973203 } from 'migrations/1679653973203-init';
 
-const listMigrations = [init1679644207118,updateTypeDatetime1679645372400];
+const listMigrations = [init1679653973203];
 
 export default new DataSource({
   type: 'mysql',

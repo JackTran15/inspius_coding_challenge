@@ -15,7 +15,6 @@ import {
 @Controller()
 export class ApiGatewayController {
   constructor(
-    private readonly _footBallTeamService: FootballTeamService,
     private readonly _footBallMatchService: FootBallMatchService,
     private readonly _footBallMatchSchuleService: FootBallMatchScheduleService,
   ) {}
@@ -114,56 +113,43 @@ export class ApiGatewayController {
   // @UseGuards(ApiKeyGuard)
   async matchArrangementAsync(@Body() payload: TournamentMatchArrangementDto) {
     try {
-      const { matchs } = payload;
-      const responseNewMatchs = []; // return create new match success
-      const responseExistMatchs = []; // return exist match, can you notify manager create match arrangement
+      const { match } = payload;
 
-      for (const match of matchs) {
-        const signalGetSchedule =
-          await this._footBallMatchSchuleService.getMatchScheduleOrCreated(
-            match.matchStartTime,
-          );
+      const signalGetSchedule =
+        await this._footBallMatchSchuleService.getMatchScheduleOrCreated(
+          match.matchStartTime,
+        );
 
-        /**
-         * Find footBall Match is exist
-         * if exist true add match to responseExistMatchs
-         * else create match after add to responseNewMatchs
-         */
-        const signalGetMatch = await this._footBallMatchService.findOne({
-          where: {
-            homeTeamId: match.homeTeam,
-            awayTeamId: match.awayTeam,
-            scheduleId: signalGetSchedule.id,
-            day: signalGetSchedule.day,
-            month: signalGetSchedule.month,
-            year: signalGetSchedule.year,
-          },
-        });
-
-        if (!signalGetMatch.error && signalGetMatch.data === null) {
-          const signalMatch = await this._footBallMatchService.store({
-            homeTeamId: match.homeTeam,
-            awayTeamId: match.awayTeam,
-            startMatch: match.matchStartTime,
-            scheduleId: signalGetSchedule.id,
-            day: signalGetSchedule.day,
-            month: signalGetSchedule.month,
-            year: signalGetSchedule.year,
-          });
-          responseNewMatchs.push(signalMatch.data);
-        } else {
-          responseExistMatchs.push(signalGetMatch.data);
-        }
-      }
-
-      return {
-        message: 'Create Match arrangement',
-        data: {
-          newMatchs: responseNewMatchs,
-          existMatchs: responseExistMatchs,
+      /**
+       * Find footBall Match is exist
+       * if exist true add match to responseExistMatchs
+       * else create match after add to responseNewMatchs
+       */
+      const signalGetMatch = await this._footBallMatchService.findOne({
+        where: {
+          homeTeamId: match.homeTeam,
+          awayTeamId: match.awayTeam,
+          scheduleId: signalGetSchedule.id,
+          day: signalGetSchedule.day,
+          month: signalGetSchedule.month,
+          year: signalGetSchedule.year,
         },
-        error: false,
-      };
+      });
+
+      if (!signalGetMatch.error && signalGetMatch.data === null) {
+        const signalMatch = await this._footBallMatchService.store({
+          homeTeamId: match.homeTeam,
+          awayTeamId: match.awayTeam,
+          startMatch: match.matchStartTime,
+          scheduleId: signalGetSchedule.id,
+          day: signalGetSchedule.day,
+          month: signalGetSchedule.month,
+          year: signalGetSchedule.year,
+        });
+        return signalMatch;
+      } else {
+        return signalGetMatch;
+      }
     } catch (e) {
       console.log('e', e);
       return {

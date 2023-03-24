@@ -1,11 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
-import { AppModule } from '../src/app.module';
+import { FootballTeam } from '@/entities';
 import { FootballTeamService } from '@/modules';
 import { FootBallTeamCreateDto } from '@/modules/football-team-module/dtos/football-team-create.dto';
-import { ResponseInterceptor } from '@/shared/Interceptors/response.interceptor';
 import { HttpExceptionFilter } from '@/shared/exception-filters/http-exception.filter';
+import { ResponseInterceptor } from '@/shared/Interceptors/response.interceptor';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import * as request from 'supertest';
+import { AppModule } from '../src/app.module';
 
 describe('FootBall Team Controller (e2e)', () => {
   let app: INestApplication;
@@ -32,66 +33,40 @@ describe('FootBall Team Controller (e2e)', () => {
   describe('Get List FootBallTeam', () => {
     it(`${prefix} (GET) none Params`, () => {
       // override the implementation of the find method
+      const paging = {
+        skip: 0,
+        limit: 10,
+      };
+
+      const size = 20;
+      const docs = new Array(size).fill(0).map((_, i) => {
+        const team = new FootballTeam();
+        return team;
+      });
+      const pagingDocs = docs.slice(0, paging.limit);
+
       const responseSuccess = {
-        message: 'Get List Success',
+        error: false,
         data: {
-          docs: [
-            {
-              id: 70,
-              created: '2023-03-14T02:05:49.000Z',
-              createdBy: 'Admin',
-              updated: '2023-03-14T02:05:49.000Z',
-              updatedBy: 'Admin',
-              name: 'MU',
-              logoId: 70,
-              status: 'active',
-              logo: {
-                id: 70,
-                created: '2023-03-14T02:05:49.000Z',
-                createdBy: 'Admin',
-                updated: '2023-03-14T02:05:49.000Z',
-                updatedBy: 'Admin',
-                name: 'MU',
-                src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                alt: 'MU',
-              },
-            },
-            {
-              id: 71,
-              created: '2023-03-14T02:05:49.000Z',
-              createdBy: 'Admin',
-              updated: '2023-03-14T02:05:49.000Z',
-              updatedBy: 'Admin',
-              name: 'MC',
-              logoId: 71,
-              status: 'active',
-              logo: {
-                id: 71,
-                created: '2023-03-14T02:05:49.000Z',
-                createdBy: 'Admin',
-                updated: '2023-03-14T02:05:49.000Z',
-                updatedBy: 'Admin',
-                name: 'MC',
-                src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                alt: 'MC',
-              },
-            },
-          ],
+          docs: pagingDocs,
           paging: {
-            total: 2,
-            skip: 2,
-            limit: 10,
+            total: size,
+            skip: paging.limit,
+            limit: paging.limit,
           },
         },
-        error: false,
+        message: 'Get List Success',
       };
 
       footBallTeamService.find = jest.fn().mockResolvedValue(responseSuccess);
 
       return request(app.getHttpServer())
         .get(prefix)
+        .query(paging)
         .expect(200)
-        .expect(responseSuccess);
+        .then((res) => {
+          expect(res.body).toEqual(responseSuccess);
+        });
     });
   });
 
@@ -105,19 +80,6 @@ describe('FootBall Team Controller (e2e)', () => {
           alt: 'MU',
         },
       });
-
-      const responseNewImage = {
-        message: expect.any(String),
-        data: {
-          id: expect.any(Number),
-          created: '2023-03-14T02:05:49.000Z',
-          createdBy: 'Admin',
-          updated: '2023-03-14T02:05:49.000Z',
-          updatedBy: 'Admin',
-          ...payload.logo,
-        },
-        error: false,
-      };
 
       const responseNewFootBallTeam = {
         message: expect.any(String),
@@ -196,5 +158,8 @@ describe('FootBall Team Controller (e2e)', () => {
           expect(res.body).toEqual(responseData);
         });
     });
+  });
+  afterAll(async () => {
+    await app.close();
   });
 });

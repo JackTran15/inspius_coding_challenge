@@ -355,27 +355,13 @@ describe('API Gateway controller', () => {
 
   describe('Tournament (POST) Match Arrangement', () => {
     it('should Match Arrangement Exist Matchs', async () => {
-      const matchs = [
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 99,
-          matchStartTime: '2023-03-25T03:12:17.420Z',
-        },
-      ];
-      const payload = {
-        matchs,
+      const match = {
+        homeTeam: 80,
+        awayTeam: 74,
+        matchStartTime: '2023-03-15T03:11:30.748Z',
       };
 
+      const payload = { match };
       const queryCriteriaFootballMatch = {
         where: {
           year: expect.any(Number),
@@ -407,11 +393,8 @@ describe('API Gateway controller', () => {
       const resController = await controller.matchArrangementAsync(payload);
 
       const expectedListFootBallMatch = {
-        message: 'Create Match arrangement',
-        data: {
-          newMatchs: [],
-          existMatchs: [footballMatch, footballMatch, footballMatch],
-        },
+        message: 'Get Detail Success',
+        data: footballMatch,
         error: false,
       };
 
@@ -423,25 +406,13 @@ describe('API Gateway controller', () => {
     });
 
     it('should Match Arrangement New Matchs', async () => {
-      const matchs = [
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 99,
-          matchStartTime: '2023-03-25T03:12:17.420Z',
-        },
-      ];
+      const match = {
+        homeTeam: 80,
+        awayTeam: 74,
+        matchStartTime: '2023-03-15T03:11:30.748Z',
+      };
       const payload = {
-        matchs,
+        match,
       };
 
       const queryCriteriaFootballMatch = {
@@ -473,11 +444,8 @@ describe('API Gateway controller', () => {
       const resController = await controller.matchArrangementAsync(payload);
 
       const expectedListFootBallMatch = {
-        message: 'Create Match arrangement',
-        data: {
-          existMatchs: [],
-          newMatchs: [footballMatch, footballMatch, footballMatch],
-        },
+        message: expect.any(String),
+        data: footballMatch,
         error: false,
       };
 
@@ -489,25 +457,13 @@ describe('API Gateway controller', () => {
     });
 
     it('should Match Arrangement Two New Matchs and One Exist Matchs', async () => {
-      const matchs = [
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 74,
-          matchStartTime: '2023-03-15T03:11:30.748Z',
-        },
-        {
-          homeTeam: 80,
-          awayTeam: 99,
-          matchStartTime: '2023-03-25T03:12:17.420Z',
-        },
-      ];
+      const match = {
+        homeTeam: 80,
+        awayTeam: 99,
+        matchStartTime: '2023-03-25T03:12:17.420Z',
+      };
       const payload = {
-        matchs,
+        match,
       };
 
       const queryCriteriaFootballMatch = {
@@ -545,11 +501,8 @@ describe('API Gateway controller', () => {
       const resController = await controller.matchArrangementAsync(payload);
 
       const expectedListFootBallMatch = {
-        message: 'Create Match arrangement',
-        data: {
-          existMatchs: [footballMatch],
-          newMatchs: [footballMatch, footballMatch],
-        },
+        message: 'Get Detail Success',
+        data: footballMatch,
         error: false,
       };
 

@@ -129,10 +129,10 @@ export class ApiGatewayController {
         where: {
           homeTeamId: match.homeTeam,
           awayTeamId: match.awayTeam,
-          scheduleId: signalGetSchedule.id,
-          day: signalGetSchedule.day,
-          month: signalGetSchedule.month,
-          year: signalGetSchedule.year,
+          scheduleId: signalGetSchedule.data.id,
+          day: signalGetSchedule.data.day,
+          month: signalGetSchedule.data.month,
+          year: signalGetSchedule.data.year,
         },
       });
 
@@ -141,10 +141,10 @@ export class ApiGatewayController {
           homeTeamId: match.homeTeam,
           awayTeamId: match.awayTeam,
           startMatch: match.matchStartTime,
-          scheduleId: signalGetSchedule.id,
-          day: signalGetSchedule.day,
-          month: signalGetSchedule.month,
-          year: signalGetSchedule.year,
+          scheduleId: signalGetSchedule.data.id,
+          day: signalGetSchedule.data.day,
+          month: signalGetSchedule.data.month,
+          year: signalGetSchedule.data.year,
         });
         return signalMatch;
       } else {

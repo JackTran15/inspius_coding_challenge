@@ -15,28 +15,34 @@ export class FootBallMatchScheduleService extends BaseService<FootballMatchSched
   }
 
   async getMatchScheduleOrCreated(startMatch: string) {
-    const { year, month, date }: any = DateUtil.get(startMatch, [
-      'year',
-      'month',
-      'date',
-    ]);
+    try {
+      const { year, month, date }: any = DateUtil.get(startMatch, [
+        'year',
+        'month',
+        'date',
+      ]);
 
-    const matchSchedule = await this.repository.findOne({
-      where: {
+      const matchScheduleGet = await this.repository.findOne({
+        where: {
+          year,
+          month,
+          day: date,
+        },
+      });
+
+      if (matchScheduleGet) return { error: false, data: matchScheduleGet, message: 'schedule found' };
+
+      const matchScheduleCreate = await this.repository.save({
         year,
         month,
         day: date,
-      },
-    });
+        dateValue: new Date(startMatch),
+      });
 
-    if (matchSchedule) return matchSchedule;
+      return { error: false, data: matchScheduleCreate, message: 'schedule created' };;
 
-    const signalMatchSchedule = await this.repository.save({
-      year,
-      month,
-      day: date,
-      dateValue: new Date(startMatch),
-    });
-    return signalMatchSchedule;
+    } catch (error) {
+      return { error: true, message: error.message, data: null }
+    }
   }
 }

@@ -1,177 +1,201 @@
+import { EFootballTeamStatus, FootballMatch, FootballTeam } from '@/entities';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { FootBallTeamCreateDto } from '../dtos/football-team-create.dto';
 import { FootballTeamService } from '../services/football-team.service';
 import { FootBallTeamController } from './football-team.controller';
-import { EntityManager } from 'typeorm';
+
+type MockType<T> = {
+  [P in keyof T]?: jest.Mock<{}>;
+};
+
+const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
+  () => ({}),
+);
 
 describe('FootBallTeamController', () => {
   let controller: FootBallTeamController;
   let footBallTeamService: FootballTeamService;
+  let footBallTeamRepository: MockType<Repository<FootballTeam>>;
+
   const paging = {
     limit: 10,
     skip: 0,
   };
 
-  const mockFootballTeamService = () => ({
-    find: jest.fn((options) => {
-      return {
-        message: 'success',
-        data: [],
-        error: false,
-      };
-    }),
-    store: jest.fn((payload) => {
-      return {
-        message: 'success',
-        data: {
-          id: expect.any(Number),
-          ...payload,
-          created: expect.any(Date),
-          updated: expect.any(Date),
-          createBy: 'admin',
-          updateBy: 'admin',
-        },
-        error: false,
-      };
-    }),
-  });
-
   beforeEach(async () => {
-    const FootballTeamProvider = {
-      provide: FootballTeamService,
-      useFactory: mockFootballTeamService,
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       controllers: [FootBallTeamController],
-      providers: [FootballTeamService, FootballTeamProvider],
+      providers: [
+        FootballTeamService, // Provide your mock instead of the actual repository
+        {
+          provide: getRepositoryToken(FootballTeam),
+          useFactory: repositoryMockFactory,
+        },
+      ],
     }).compile();
 
     controller = module.get<FootBallTeamController>(FootBallTeamController);
     footBallTeamService = module.get<FootballTeamService>(FootballTeamService);
+    footBallTeamRepository = module.get(getRepositoryToken(FootballTeam));
   });
 
   it('should controller be defined', () => {
     expect(controller).toBeDefined();
+    expect(footBallTeamService).toBeDefined();
+    expect(footBallTeamRepository).toBeDefined();
   });
 
-  it('should get all football team return list empty', async () => {
-    const options = {};
-    const resFootBallData = {
-      message: 'get List Sucess',
-      data: { docs: [], paging: { total: 0 } },
-      error: false,
-    };
-    // override mock function
-    footBallTeamService.find = jest.fn().mockResolvedValue(resFootBallData);
+  describe('Controller Get', () => {
+    it('should get all football team return list empty', async () => {
+      const condition = {
+        status: EFootballTeamStatus.ACTIVE,
+      };
 
-    const signalFootBallTeam = await footBallTeamService.find(options);
+      const paging = {
+        skip: 0,
+        limit: 16,
+      };
 
-    const result = await controller.getList(paging, paging);
-    expect(result).toEqual(signalFootBallTeam);
-    expect(result.data.docs).toEqual([]);
-    expect(result.error).toEqual(false);
-  });
+      const queryCriteria = {
+        where: condition,
+        take: paging.limit,
+        skip: paging.skip,
+      };
 
-  it('should get all football team return list not empty', async () => {
-    const options = {};
-    const resFootBallData = {
-      message: 'get List Sucess',
-      data: {
-        docs: [
-          {
-            id: 70,
-            created: '2023-03-14T02:05:49.000Z',
-            createdBy: 'Admin',
-            updated: '2023-03-14T02:05:49.000Z',
-            updatedBy: 'Admin',
-            name: 'MU',
-            logoId: 70,
-            status: 'active',
-            logo: {
-              id: 70,
-              created: '2023-03-14T02:05:49.000Z',
-              createdBy: 'Admin',
-              updated: '2023-03-14T02:05:49.000Z',
-              updatedBy: 'Admin',
-              name: 'MU',
-              src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-              alt: 'MU',
-            },
-          },
-        ],
-        paging: { total: 1, limit: 10, skip: 0 },
-      },
-      error: false,
-    };
-    // override mock function
-    footBallTeamService.find = jest.fn().mockResolvedValue(resFootBallData);
+      const size = 20;
 
-    const signalFootBallTeam = await footBallTeamService.find(options);
+      const docs = new Array(size).fill(0).map((_) => new FootballTeam());
 
-    const result = await controller.getList(paging, paging);
-    expect(result).toEqual(signalFootBallTeam);
-    expect(result.data.docs).not.toEqual([]);
-    expect(result.data.docs.length).toBeGreaterThan(0);
-    expect(result.error).toEqual(false);
-  });
+      const listFootballTeam = {
+        message: 'Get List Success',
+        data: {
+          docs: docs.slice(0, 0),
+          paging: { total: 0, skip: 0, limit: paging.limit },
+        },
+        error: false,
+      };
+      // override mock function repository
+      footBallTeamRepository.find = jest
+        .fn()
+        .mockResolvedValue(docs.slice(0, 0));
+      footBallTeamRepository.count = jest.fn().mockResolvedValue(0);
 
-  it('should create football team return success', async () => {
-    const payload = new FootBallTeamCreateDto({
-      name: 'MU 4',
-      logo: {
-        name: 'Logo Man City 2',
-        src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-        alt: 'Logo Man City 2',
-      },
+      const result = await controller.getList(paging, paging);
+      expect(result).toEqual(listFootballTeam);
+      expect(footBallTeamRepository.find).toBeCalledWith(queryCriteria);
+      expect(footBallTeamRepository.count).toBeCalledWith({ where: condition });
+      expect(result.data.docs).toEqual([]);
+      expect(result.error).toEqual(false);
     });
 
-    const signalFootBallTeam = await footBallTeamService.store({
-      name: payload.name,
-      logoName: payload.logo.name,
-      logoSrc: payload.logo.src,
-    });
+    it('should get all football team return list', async () => {
+      const condition = {
+        status: EFootballTeamStatus.ACTIVE,
+      };
 
-    expect(signalFootBallTeam.error).toEqual(false);
-    expect(signalFootBallTeam.data).not.toEqual(null);
-  });
+      const paging = {
+        skip: 0,
+        limit: 16,
+      };
 
-  it('should create football team return image error', async () => {
-    const payload = new FootBallTeamCreateDto({
-      name: 'MU 4',
-      logo: {
-        name: 'Logo Man City 2',
-        src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-        alt: 'Logo Man City 2',
-      },
+      const queryCriteria = {
+        where: condition,
+        take: paging.limit,
+        skip: paging.skip,
+      };
+
+      const size = 20;
+
+      const docs = new Array(size).fill(0).map((_) => new FootballTeam());
+      const pagingDocs = docs.slice(0, paging.limit);
+
+      const listFootballTeam = {
+        message: 'Get List Success',
+        data: {
+          docs: pagingDocs,
+          paging: { total: size, skip: paging.limit, limit: paging.limit },
+        },
+        error: false,
+      };
+      // override mock function repository
+      footBallTeamRepository.find = jest.fn().mockResolvedValue(pagingDocs);
+      footBallTeamRepository.count = jest.fn().mockResolvedValue(size);
+
+      const result = await controller.getList(paging, paging);
+
+      //expect
+      expect(result).toEqual(listFootballTeam);
+      expect(footBallTeamRepository.find).toBeCalledWith(queryCriteria);
+      expect(footBallTeamRepository.count).toBeCalledWith({ where: condition });
+      expect(result.data.docs).toEqual(pagingDocs);
+      expect(result.error).toEqual(false);
     });
   });
 
-  it('should create football team return footTeam error', async () => {
-    const payload = new FootBallTeamCreateDto({
-      name: 'MU 4',
-      logo: {
-        name: 'Logo Man City 2',
-        src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-        alt: 'Logo Man City 2',
-      },
+  describe('Controller Get', () => {
+    it('should create football team return success', async () => {
+      const payload = new FootBallTeamCreateDto({
+        name: 'jacknathan',
+        logo: {
+          name: 'jacknathan team',
+          alt: 'jacknathan team',
+          src: 'src',
+        },
+      });
+
+      const doc = new FootballTeam();
+      doc.name = payload.name;
+      doc.logoName = payload.logo.name;
+      doc.logoSrc = payload.logo.src;
+
+      const footBallTeam = {
+        message: 'Create Success My Entity',
+        data: doc,
+        error: false,
+      };
+      // override mock function repository
+      footBallTeamRepository.save = jest.fn().mockResolvedValue(doc);
+
+      const result = await controller.createAsync(payload);
+      expect(result).toEqual(footBallTeam);
+      expect(result.data).toEqual(doc);
+      expect(result.error).toEqual(false);
+      expect(footBallTeamRepository.save).toBeCalledWith(doc);
     });
 
-    // override mock function
-    footBallTeamService.store = jest.fn().mockResolvedValue({
-      message: 'Insert server error',
-      data: null,
-      error: false,
-    });
+    it('should create football team return footTeam error', async () => {
+      const payload = new FootBallTeamCreateDto({
+        name: 'jacknathan',
+        logo: {
+          name: 'jacknathan team',
+          alt: 'jacknathan team',
+          src: 'src',
+        },
+      });
 
-    const signalFootBallTeam = await footBallTeamService.store({
-      name: payload.name,
-      logoName: payload.logo.name,
-      logoSrc: payload.logo.src,
-    });
+      const doc = new FootballTeam();
+      doc.name = payload.name;
+      doc.logoName = payload.logo.name;
+      doc.logoSrc = payload.logo.src;
 
-    expect(signalFootBallTeam.error).toEqual(false);
-    expect(signalFootBallTeam.data).toEqual(null);
+      const footBallTeam = {
+        data: null,
+        error: true,
+        message: 'Connect Server Problem',
+      };
+
+      // override mock function
+      footBallTeamRepository.save = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('Connect Server Problem'));
+
+      const result = await controller.createAsync(payload);
+      expect(result).toEqual(footBallTeam);
+      expect(result.data).toEqual(null);
+      expect(result.error).toEqual(true);
+    });
   });
 });

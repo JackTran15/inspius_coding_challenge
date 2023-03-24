@@ -6,7 +6,16 @@ import {
 import { TournamentGetListResDto } from '@/modules/football-team-module/types';
 import { Paging } from '@/shared/decorators';
 import { PagingQueryDto } from '@/shared/dto';
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiResponse } from '@nestjs/swagger';
 import { FindManyOptions, In } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
@@ -71,7 +80,7 @@ export class TournamentController {
       }
 
       /**
-       * Find schedule in query criteria with condition day, month, year 
+       * Find schedule in query criteria with condition day, month, year
        * Distinct select raw with colurms(day, month, year).
        */
       const schedules = await this._footBallMatchService.findDistinctCalendar({

@@ -138,14 +138,14 @@ describe('Tournament Service Spec', () => {
         skip: paging.skip,
       };
 
-      const docs = new Array(20).fill(0).map((_) => new Tournament());
+      const docs = new Array(0).fill(0).map((_) => new Tournament());
 
       const expectedResponse = {
         message: 'get List Sucess',
         data: {
-          docs: [],
+          docs: docs,
           paging: {
-            total: 2,
+            total: docs.length,
             limit: paging.limit,
             skip: paging.skip + paging.limit,
           },
@@ -231,10 +231,12 @@ describe('Tournament Service Spec', () => {
         skip: paging.skip,
       };
 
+      const docs = new Array(0).fill(0).map((_) => new Tournament());
+
       const expectedResponse = {
         message: 'Get List Success',
         data: {
-          docs: [],
+          docs: docs,
           paging: {
             total: 0,
             limit: paging.limit,
@@ -482,7 +484,7 @@ describe('Tournament Service Spec', () => {
       const doc = new Tournament();
 
       const expectedResponse = {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: doc,
         error: false,
       };

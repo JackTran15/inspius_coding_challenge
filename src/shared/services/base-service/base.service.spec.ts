@@ -387,7 +387,7 @@ describe('BaseService', () => {
       };
 
       const expectedResponse = {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: {
           id: expect.any(Number),
           ...payload,

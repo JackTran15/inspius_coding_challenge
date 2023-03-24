@@ -156,7 +156,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
     try {
       const signalCreate = await this.repository.save(data);
       return {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: signalCreate,
         error: false,
       };

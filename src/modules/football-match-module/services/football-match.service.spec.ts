@@ -482,7 +482,7 @@ describe('FootballMatch Service Spec', () => {
       const doc = new FootballMatch();
 
       const expectedResponse = {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: doc,
         error: false,
       };

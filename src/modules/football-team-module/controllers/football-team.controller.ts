@@ -20,7 +20,7 @@ export class FootBallTeamController {
     @Query() query: FootBallTeamListQueryDto,
   ) {
     // condition query with status code FootBallTeam is Active and paging skip, limit
-    const optionsFind = {
+    const queryCriteria = {
       where: {
         status: EFootballTeamStatus.ACTIVE,
       },
@@ -28,7 +28,7 @@ export class FootBallTeamController {
       skip: paging.skip,
     };
 
-    return await this._footballTeamService.find(optionsFind);
+    return await this._footballTeamService.find(queryCriteria);
   }
 
   @Post('create')

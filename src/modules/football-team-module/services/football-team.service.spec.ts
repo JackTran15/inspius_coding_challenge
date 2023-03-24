@@ -4,16 +4,17 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { EntityId } from 'typeorm/repository/EntityId';
 import { FootballTeamService } from './football-team.service';
-export type MockType<T> = {
+
+type MockType<T> = {
   [P in keyof T]?: jest.Mock<{}>;
 };
 
-export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
+const repositoryMockFactory: () => MockType<Repository<FootballTeam>> = jest.fn(
   () => ({
     findOne: jest.fn((entity) => entity),
-    // ...
   }),
 );
+
 describe('FootballTeam Service Spec', () => {
   let service: FootballTeamService;
   let repositoryMock: MockType<Repository<FootballTeam>>;
@@ -482,7 +483,7 @@ describe('FootballTeam Service Spec', () => {
       const doc = new FootballTeam();
 
       const expectedResponse = {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: doc,
         error: false,
       };

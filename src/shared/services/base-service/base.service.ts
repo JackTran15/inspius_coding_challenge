@@ -14,7 +14,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
 
   async findByIds(
     ids: EntityId[],
-    paging: { limit: number; skip: number } = { limit: 16, skip: 0 },
+    paging: { limit: number; skip: number } = { limit: 100, skip: 0 },
   ): Promise<IResponseListRepository<T>> {
     try {
       const options = {
@@ -61,6 +61,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
     skip,
     take,
     relations,
+    order,
   }: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
     try {
       const signalFindAll = await this.repository.find({
@@ -69,6 +70,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
         skip,
         take,
         relations,
+        order,
       });
       const signalCount = await this.repository.count({ where });
 

@@ -1,9 +1,5 @@
 import { AppModule } from '@/app.module';
-import {
-  FootBallMatchScheduleService,
-  FootBallMatchService,
-  TournamentService,
-} from '@/modules';
+import { FootBallMatchService, TournamentService } from '@/modules';
 import { TournamentCreateDto } from '@/modules/tournament-module/dtos';
 import { ResponseInterceptor } from '@/shared/Interceptors/response.interceptor';
 import { HttpExceptionFilter } from '@/shared/exception-filters/http-exception.filter';
@@ -14,7 +10,6 @@ import * as request from 'supertest';
 describe('Tournament Controller (e2e)', () => {
   let app: INestApplication;
   let tournamentService: TournamentService;
-  let footBallMatchScheduleService: FootBallMatchScheduleService;
   let footBallMatchService: FootBallMatchService;
   const prefix = '/tournament';
 
@@ -30,10 +25,6 @@ describe('Tournament Controller (e2e)', () => {
     await app.init();
 
     tournamentService = moduleFixture.get<TournamentService>(TournamentService);
-    footBallMatchScheduleService =
-      moduleFixture.get<FootBallMatchScheduleService>(
-        FootBallMatchScheduleService,
-      );
     footBallMatchService =
       moduleFixture.get<FootBallMatchService>(FootBallMatchService);
   });
@@ -60,18 +51,10 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
-                  status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -116,18 +99,11 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
                   status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -147,18 +123,11 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
                   status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -178,18 +147,11 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
                   status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -209,18 +171,11 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
                   status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -240,18 +195,11 @@ describe('Tournament Controller (e2e)', () => {
                   updated: '2023-03-14T02:05:49.000Z',
                   updatedBy: 'Admin',
                   name: 'MU',
-                  logoId: 70,
                   status: 'active',
-                  logo: {
-                    id: 70,
-                    created: '2023-03-14T02:05:49.000Z',
-                    createdBy: 'Admin',
-                    updated: '2023-03-14T02:05:49.000Z',
-                    updatedBy: 'Admin',
-                    name: 'MU',
-                    src: 'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
-                    alt: 'MU',
-                  },
+                  logoName: 'MU',
+                  logoSrc:
+                    'https://www.google.com.vn/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png',
+                  logoAlt: 'MU',
                 },
               ],
             },
@@ -329,9 +277,9 @@ describe('Tournament Controller (e2e)', () => {
         message: 'Get List Success',
       };
 
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValue(signalScheduleMatch);
+      // footBallMatchScheduleService.find = jest
+      //   .fn()
+      //   .mockResolvedValue(signalScheduleMatch);
 
       footBallMatchService.count = jest.fn().mockResolvedValue(10);
 
@@ -408,9 +356,9 @@ describe('Tournament Controller (e2e)', () => {
         message: 'Get List Success',
       };
 
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValue(signalScheduleMatch);
+      // footBallMatchScheduleService.find = jest
+      //   .fn()
+      //   .mockResolvedValue(signalScheduleMatch);
 
       footBallMatchService.count = jest.fn().mockResolvedValue(10);
 
@@ -499,9 +447,9 @@ describe('Tournament Controller (e2e)', () => {
         message: 'Get List Match Schedule',
       };
 
-      footBallMatchScheduleService.find = jest
-        .fn()
-        .mockResolvedValue(signalScheduleMatch);
+      // footBallMatchScheduleService.find = jest
+      //   .fn()
+      //   .mockResolvedValue(signalScheduleMatch);
 
       footBallMatchService.find = jest.fn().mockResolvedValue(signalMatch);
 

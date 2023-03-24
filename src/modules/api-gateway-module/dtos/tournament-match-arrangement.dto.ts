@@ -35,15 +35,6 @@ export class TournamentMatchArrangementItemDto {
 
 export class TournamentMatchArrangementDto {
   @ApiProperty({
-    description: 'The id of the tournament',
-    type: Number,
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  tournamentId!: number;
-
-  @ApiProperty({
     description: 'The match arrangement of the tournament',
     type: Array<TournamentMatchArrangementItemDto>,
     example: [

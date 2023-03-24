@@ -14,4 +14,11 @@ export class DateUtil {
     });
     return obj;
   }
+
+  static setReset(date: string | Date, isStart: boolean = true) {
+    const dateJs = dayjs(date);
+    if (isStart) return dateJs.set('h', 0).set('minute', 0).set('second', 0);
+
+    return dateJs.set('h', 23).set('minute', 59).set('second', 59);
+  }
 }

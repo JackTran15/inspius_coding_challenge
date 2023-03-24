@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { FootballTeamService, ImageService } from '@/modules';
+import { FootballTeamService } from '@/modules';
 import { FootBallTeamCreateDto } from '@/modules/football-team-module/dtos/football-team-create.dto';
 import { ResponseInterceptor } from '@/shared/Interceptors/response.interceptor';
 import { HttpExceptionFilter } from '@/shared/exception-filters/http-exception.filter';
@@ -10,7 +10,6 @@ import { HttpExceptionFilter } from '@/shared/exception-filters/http-exception.f
 describe('FootBall Team Controller (e2e)', () => {
   let app: INestApplication;
   let footBallTeamService: FootballTeamService;
-  let imageService: ImageService;
   const prefix = '/football-team';
 
   beforeEach(async () => {
@@ -28,7 +27,6 @@ describe('FootBall Team Controller (e2e)', () => {
 
     footBallTeamService =
       moduleFixture.get<FootballTeamService>(FootballTeamService);
-    imageService = moduleFixture.get<ImageService>(ImageService);
   });
 
   describe('Get List FootBallTeam', () => {
@@ -121,10 +119,6 @@ describe('FootBall Team Controller (e2e)', () => {
         error: false,
       };
 
-      imageService.store = jest.fn().mockResolvedValue(responseNewImage);
-
-      const signalNewImage = await imageService.store(payload.logo);
-
       const responseNewFootBallTeam = {
         message: expect.any(String),
         data: {
@@ -134,7 +128,8 @@ describe('FootBall Team Controller (e2e)', () => {
           updated: '2023-03-14T02:05:49.000Z',
           updatedBy: 'Admin',
           name: payload.name,
-          logoId: signalNewImage.data.id,
+          logoName: 'jacknathan',
+          logoSrc: 'jacknathan Src',
           status: 'active',
         },
         error: false,

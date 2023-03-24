@@ -24,7 +24,4 @@ export class FootballTeam extends _BaseEntity {
     default: EFootballTeamStatus.ACTIVE,
   })
   status: EFootballTeamStatus;
-
-  @ManyToMany(() => Tournament, (tournament) => tournament.teams)
-  tournaments: Tournament;
 }

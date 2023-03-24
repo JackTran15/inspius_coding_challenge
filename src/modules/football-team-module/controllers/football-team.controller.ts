@@ -14,7 +14,7 @@ export class FootBallTeamController {
   constructor(private readonly _footballTeamService: FootballTeamService) {}
 
   @Get()
-  @UseGuards(ApiKeyGuard)
+  // @UseGuards(ApiKeyGuard)
   async getList(
     @Paging() paging: PagingQueryDto,
     @Query() query: FootBallTeamListQueryDto,
@@ -32,7 +32,7 @@ export class FootBallTeamController {
   }
 
   @Post('create')
-  @UseGuards(ApiKeyGuard)
+  // @UseGuards(ApiKeyGuard)
   async createAsync(@Body() payload: FootBallTeamCreateDto) {
     const { name, logo } = payload;
     try {

@@ -14,15 +14,10 @@ const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
   () => ({}),
 );
 
-describe('FootBallTeamController', () => {
+describe('FootBallTeam Controller', () => {
   let controller: FootBallTeamController;
   let footBallTeamService: FootballTeamService;
   let footBallTeamRepository: MockType<Repository<FootballTeam>>;
-
-  const paging = {
-    limit: 10,
-    skip: 0,
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

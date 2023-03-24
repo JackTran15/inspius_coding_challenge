@@ -57,7 +57,6 @@ export class SeedService {
         where: {
           homeTeamId: homeTeam.id,
           awayTeamId: awayTeam.id,
-          tournamentId: tournament.id,
           day: date,
           month: month,
           year: year,
@@ -69,7 +68,6 @@ export class SeedService {
           homeTeamId: homeTeam.id,
           awayTeamId: awayTeam.id,
           startMatch: payloadScheduleMatch,
-          tournamentId: tournament.id,
           day: date,
           month: month,
           year: year,

@@ -123,7 +123,7 @@ Migrations
 
 - gernerate migration files to ./migrations directory 
 ```
-yarn migration:generate --name=<meaningful_name>
+npm run migration:generate --name=<meaningful_name>
 ```
 
 - apply exists ./migrations files: 

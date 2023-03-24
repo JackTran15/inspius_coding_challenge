@@ -9,4 +9,7 @@ export class FootballMatchSchedule extends _BaseEntity {
   month: number;
   @Column({ type: 'int' })
   year: number;
+
+  @Column({ type: 'datetime' })
+  dateValue: Date;
 }

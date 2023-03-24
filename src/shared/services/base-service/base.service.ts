@@ -14,7 +14,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
 
   async findByIds(
     ids: EntityId[],
-    paging: { limit: number; skip: number } = { limit: 16, skip: 0 },
+    paging: { limit: number; skip: number } = { limit: 100, skip: 0 },
   ): Promise<IResponseListRepository<T>> {
     try {
       const options = {
@@ -55,10 +55,24 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
     }
   }
 
-  async find(options: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
+  async find({
+    where,
+    select,
+    skip = 0,
+    take = 10,
+    relations,
+    order,
+  }: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
     try {
-      const signalFindAll = await this.repository.find(options);
-      const signalCount = await this.repository.count(options);
+      const signalFindAll = await this.repository.find({
+        where,
+        select,
+        skip,
+        take,
+        relations,
+        order,
+      });
+      const signalCount = await this.repository.count({ where });
 
       return {
         message: 'Get List Success',
@@ -66,11 +80,8 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
           docs: signalFindAll,
           paging: {
             total: signalCount,
-            limit: options.take,
-            skip:
-              options.skip + options.take > signalCount
-                ? signalCount
-                : options.skip + options.take,
+            limit: take,
+            skip: skip + take > signalCount ? signalCount : skip + take,
           },
         },
         error: false,
@@ -82,8 +93,8 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
           docs: [],
           paging: {
             total: 0,
-            limit: options.take,
-            skip: options.skip,
+            limit: take,
+            skip: skip,
           },
         },
         error: false,
@@ -147,7 +158,7 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
     try {
       const signalCreate = await this.repository.save(data);
       return {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: signalCreate,
         error: false,
       };

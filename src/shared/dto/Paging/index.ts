@@ -18,7 +18,7 @@ export class PagingQueryDto {
     description: 'Limit the number of elements',
     type: Number,
     required: false,
-    example: 16,
+    example: 30,
   })
   @IsNumberString()
   @IsOptional()

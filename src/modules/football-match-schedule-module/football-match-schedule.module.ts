@@ -6,6 +6,6 @@ import { FootBallMatchScheduleService } from './services';
 @Module({
   imports: [TypeOrmModule.forFeature([FootballMatchSchedule])],
   providers: [FootBallMatchScheduleService],
-  exports: [TypeOrmModule, FootBallMatchScheduleService],
+  exports: [FootBallMatchScheduleService],
 })
 export class FootBallMatchScheduleModule {}

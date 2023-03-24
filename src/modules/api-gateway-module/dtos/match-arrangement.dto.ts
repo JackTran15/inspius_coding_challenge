@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNumber,
   IsNotEmpty,
   IsArray,
   ValidateNested,
   IsISO8601,
+  IsObject,
+  IsNotEmptyObject,
+  IsDefined,
 } from 'class-validator';
 
 export class TournamentMatchArrangementItemDto {
@@ -35,31 +39,18 @@ export class TournamentMatchArrangementItemDto {
 
 export class TournamentMatchArrangementDto {
   @ApiProperty({
-    description: 'The id of the tournament',
-    type: Number,
-    example: 1,
-  })
-  @IsNotEmpty()
-  @IsNumber()
-  tournamentId!: number;
-
-  @ApiProperty({
     description: 'The match arrangement of the tournament',
-    type: Array<TournamentMatchArrangementItemDto>,
-    example: [
-      {
-        homeTeam: 80,
-        awayTeam: 74,
-        matchStartTime: '2023-03-15T03:11:30.748Z',
-      },
-      {
-        homeTeam: 80,
-        awayTeam: 99,
-        matchStartTime: '2023-03-25T03:12:17.420Z',
-      },
-    ],
+    type: TournamentMatchArrangementItemDto,
+    example: {
+      homeTeam: 80,
+      awayTeam: 99,
+      matchStartTime: '2023-03-25T03:12:17.420Z',
+    },
   })
-  @IsArray()
-  @ValidateNested({ each: true })
-  matchs: Array<TournamentMatchArrangementItemDto>;
+  @IsDefined()
+  @IsNotEmptyObject()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => TournamentMatchArrangementItemDto)
+  match: TournamentMatchArrangementItemDto;
 }

@@ -1,16 +1,8 @@
 import { Module } from '@nestjs/common';
-import { FootBallTeamModule } from './modules/football-team-module/football-team.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TournamentTeamModule } from './modules/tournament-module/tournament.module';
+import { FootballMatch, FootballMatchSchedule, FootballTeam } from './entities';
+import { ApiGatewayModule } from './modules/api-gateway-module/api-gateway.module';
 import { configService } from './shared/services/config.service';
-import { ImageModule } from './modules';
-import {
-  FootballMatch,
-  FootballMatchSchedule,
-  FootballTeam,
-  ImageEntity,
-  Tournament,
-} from './entities';
 
 @Module({
   imports: [
@@ -22,20 +14,11 @@ import {
         username: configService.getValue('MYSQL_USER'),
         password: configService.getValue('MYSQL_PASSWORD'),
         database: configService.getValue('MYSQL_DB'),
-        entities: [
-          FootballMatch,
-          FootballMatchSchedule,
-          FootballTeam,
-          ImageEntity,
-          Tournament,
-        ],
+        entities: [FootballMatch, FootballTeam, FootballMatchSchedule],
         synchronize: true,
       }),
     }),
-    FootBallTeamModule,
-    TournamentTeamModule,
+    ApiGatewayModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

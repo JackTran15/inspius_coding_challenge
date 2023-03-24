@@ -19,6 +19,10 @@ class ConfigService {
     return this;
   }
 
+  public getApiKey() {
+    return this.getValue('API_KEY', true);
+  }
+
   public getPort() {
     return this.getValue('PORT', true);
   }
@@ -53,6 +57,7 @@ const configService = new ConfigService(process.env).ensureValues([
   'MYSQL_USER',
   'MYSQL_PASSWORD',
   'MYSQL_DB',
+  'API_KEY',
 ]);
 
 export { configService };

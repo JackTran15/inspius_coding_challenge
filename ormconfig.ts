@@ -1,11 +1,10 @@
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
-import { join } from 'path';
 import { configService } from './src/shared/services/config.service';
-import { FootballMatch, FootballMatchSchedule, FootballTeam, ImageEntity, Tournament } from '@/entities';
-import { init1679399340126 } from 'migrations/1679399340126-init';
+import { FootballMatch, FootballTeam, FootballMatchSchedule } from '@/entities';
+import { init1679653973203 } from 'migrations/1679653973203-init';
 
-const listMigrations = [init1679399340126];
+const listMigrations = [init1679653973203];
 
 export default new DataSource({
   type: 'mysql',
@@ -14,7 +13,7 @@ export default new DataSource({
   username: configService.getValue('MYSQL_USER'),
   password: configService.getValue('MYSQL_PASSWORD'),
   database: configService.getValue('MYSQL_DB'),
-  entities: [FootballMatch, FootballMatchSchedule, FootballTeam, ImageEntity, Tournament],
+  entities: [FootballMatch, FootballTeam,FootballMatchSchedule],
   migrationsTableName: 'migrations',
   migrations: listMigrations,
 });

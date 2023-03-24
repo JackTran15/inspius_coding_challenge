@@ -18,22 +18,22 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./jest-e2e.ts",
+    "test:e2e": "jest --forceExit --config ./jest-e2e.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli ",
-    
     "seed": "ts-node -r tsconfig-paths/register ./src/seeds.ts ",
     "migration:run": "npm run typeorm migration:run -- -d ./ormconfig.ts",
     "migration:generate": "cross-var npm run typeorm -- -d ./ormconfig.ts migration:generate ./migrations/$npm_config_name",
     "migration:create": "cross-var npm run typeorm -- migration:create ./migrations/$npm_config_name",
     "migration:revert": "npm run typeorm -- -d ./ormconfig.ts migration:revert",
-    
     "start:docker": "docker compose up -d",
     "start:docker-old": "docker-compose up -d",
     "seed:docker": "docker compose -f ./docker-compose.seed.yml up -d"
   },
   "dependencies": {
-    "@nestjs/common": "^9.0.0",
-    "@nestjs/core": "^9.0.0",
+    "@automapper/core": "^8.7.7",
+    "@automapper/nestjs": "^8.7.7",
+    "@nestjs/common": "^9.3.12",
+    "@nestjs/core": "^9.3.12",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/typeorm": "^9.0.1",
@@ -42,9 +42,10 @@
     "cross-var": "^1.1.0",
     "dayjs": "^1.11.7",
     "mysql2": "^3.2.0",
+    "pg-mem": "^2.6.9",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0",
+    "rxjs": "^7.8.0",
     "typeorm": "^0.3.12"
   },
   "devDependencies": {

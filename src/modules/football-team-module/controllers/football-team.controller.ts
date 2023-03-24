@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { FootballTeamService } from '@modules/football-team-module/services';
-import { ImageService } from '@modules/image-module/services';
 import {
   FootBallTeamCreateDto,
   FootBallTeamListQueryDto,
@@ -8,56 +7,49 @@ import {
 import { EFootballTeamStatus } from '@/entities';
 import { Paging } from '@/shared/decorators';
 import { PagingQueryDto } from '@/shared/dto/Paging';
-import { EntityManager } from 'typeorm';
+import { ApiKeyGuard } from '@/modules/api-key-module/guards/api-key.guard';
 
 @Controller('football-team')
 export class FootBallTeamController {
-  constructor(
-    private readonly _footballTeamService: FootballTeamService,
-    private readonly _imageService: ImageService,
-    private readonly _entityManager: EntityManager,
-  ) {}
+  constructor(private readonly _footballTeamService: FootballTeamService) {}
 
   @Get()
+  @UseGuards(ApiKeyGuard)
   async getList(
     @Paging() paging: PagingQueryDto,
     @Query() query: FootBallTeamListQueryDto,
   ) {
-    const optionsFind = {
+    // condition query with status code FootBallTeam is Active and paging skip, limit
+    const queryCriteria = {
       where: {
         status: EFootballTeamStatus.ACTIVE,
       },
       take: paging.limit,
       skip: paging.skip,
-      relations: ['logo'],
     };
 
-    return await this._footballTeamService.find(optionsFind);
+    return await this._footballTeamService.find(queryCriteria);
   }
 
   @Post('create')
+  @UseGuards(ApiKeyGuard) 
   async createAsync(@Body() payload: FootBallTeamCreateDto) {
     const { name, logo } = payload;
+    try {
+      // insert new food ball team
+      const signalFootBallTeam = await this._footballTeamService.store({
+        name,
+        logoName: logo.name,
+        logoSrc: logo.src,
+      });
 
-    return this._entityManager.transaction(async () => {
-      try {
-        const signalImage = await this._imageService.store(logo);
-        if (signalImage.error) throw new Error("Can't create image");
-        const image = signalImage.data;
-
-        const signalFootBallTeam = await this._footballTeamService.store({
-          name,
-          logoId: image.id,
-        });
-
-        return signalFootBallTeam;
-      } catch (error) {
-        return {
-          message: error.message,
-          error: true,
-          data: null,
-        };
-      }
-    });
+      return signalFootBallTeam;
+    } catch (error) {
+      return {
+        message: error.message,
+        error: true,
+        data: null,
+      };
+    }
   }
 }

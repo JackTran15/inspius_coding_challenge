@@ -133,7 +133,7 @@ describe('BaseService', () => {
       // Assert
       expect(response).toEqual(expectedResponse);
       expect(repository.find).toHaveBeenCalledWith(options);
-      expect(repository.count).toHaveBeenCalledWith(options);
+      expect(repository.count).toHaveBeenCalledWith({ where: options.where });
     });
 
     it('should return an empty list if no entities are found', async () => {
@@ -169,7 +169,7 @@ describe('BaseService', () => {
       // Assert
       expect(response).toEqual(expectedResponse);
       expect(repository.find).toHaveBeenCalledWith(options);
-      expect(repository.count).toHaveBeenCalledWith(options);
+      expect(repository.count).toHaveBeenCalledWith({ where: options.where });
     });
 
     it('should return an empty list if no connect to server problems', async () => {
@@ -387,7 +387,7 @@ describe('BaseService', () => {
       };
 
       const expectedResponse = {
-        message: 'create success',
+        message: 'Create Success My Entity',
         data: {
           id: expect.any(Number),
           ...payload,

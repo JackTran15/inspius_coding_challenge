@@ -8,10 +8,10 @@ export class Tournament extends _BaseEntity {
   @Column({ type: 'timestamp' })
   start: Date;
 
+  @Column({ type: 'timestamp' })
+  end: Date;
+
   @ManyToMany(() => FootballTeam)
   @JoinTable()
   teams: FootballTeam[];
-
-  @ManyToOne(() => FootballMatch, (match) => match.tournament)
-  matches: FootballMatch[];
 }

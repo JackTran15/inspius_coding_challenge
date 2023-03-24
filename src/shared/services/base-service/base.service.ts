@@ -58,8 +58,8 @@ export class BaseService<T extends _BaseEntity> implements IBaseService<T> {
   async find({
     where,
     select,
-    skip,
-    take,
+    skip = 0,
+    take = 10,
     relations,
     order,
   }: FindManyOptions<T>): Promise<IResponseListRepository<T>> {
